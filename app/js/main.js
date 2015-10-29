@@ -17,7 +17,7 @@ _jquery2['default'].ajaxSetup({
   }
 });
 
-},{"jquery":11}],2:[function(require,module,exports){
+},{"jquery":12}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -41,7 +41,7 @@ var ContactsModel = _Backbone2['default'].Model.extend({
 exports['default'] = ContactsModel;
 module.exports = exports['default'];
 
-},{"Backbone":9}],3:[function(require,module,exports){
+},{"Backbone":10}],3:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -73,7 +73,7 @@ var ContactsCollection = _backbone2['default'].Collection.extend({
 exports['default'] = ContactsCollection;
 module.exports = exports['default'];
 
-},{"./contact_model":2,"backbone":10}],4:[function(require,module,exports){
+},{"./contact_model":2,"backbone":11}],4:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -97,7 +97,7 @@ window.router = router;
 
 console.log('Hello, World');
 
-},{"./ajax_setup":1,"./router":5,"jquery":11}],5:[function(require,module,exports){
+},{"./ajax_setup":1,"./router":5,"jquery":12}],5:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -130,13 +130,18 @@ var _viewsContact = require('./views/contact');
 
 var _viewsContact2 = _interopRequireDefault(_viewsContact);
 
+var _viewsForm = require('./views/form');
+
+var _viewsForm2 = _interopRequireDefault(_viewsForm);
+
 var Router = _backbone2['default'].Router.extend({
 
   routes: {
     "": "home",
     "contacts": "showContacts",
     "contacts/:id": "showSpecificContact",
-    "about": "showAbout"
+    "about": "showAbout",
+    "users/new": "showForm"
   },
 
   initialize: function initialize(appElement) {
@@ -160,12 +165,31 @@ var Router = _backbone2['default'].Router.extend({
     this.$el.html((0, _viewsHome2['default'])());
   },
 
+  showForm: function showForm() {
+    var _this = this;
+
+    this.$el.html((0, _viewsForm2['default'])());
+    (0, _jquery2['default'])('#btnCreateUser').on('click', function (event) {
+      console.log('its finally working');
+      var newUser = {
+        Name: (0, _jquery2['default'])('input[name="FullName"]').val(),
+        PhoneNum: (0, _jquery2['default'])('input[name="PhoneNum"]').val(),
+        Email: (0, _jquery2['default'])('input[name="Email"]').val(),
+        Location: (0, _jquery2['default'])('input[name="Location"]').val()
+      };
+      _this.contacts.create(newUser);
+      _this.navigate('contacts');
+      _this.showContacts();
+      return false;
+    });
+  },
+
   showSpinner: function showSpinner() {
     this.$el.html('<i class="fa fa-spinner fa-spin"></i>');
   },
 
   showSpecificContact: function showSpecificContact(contactId) {
-    var _this = this;
+    var _this2 = this;
 
     var contact = this.contacts.get(contactId);
 
@@ -175,9 +199,9 @@ var Router = _backbone2['default'].Router.extend({
     } else {
       (function () {
         // todos not fetched so we need to load the one we want
-        var router = _this;
-        contact = _this.contacts.add({ objectId: contactId });
-        _this.showSpinner();
+        var router = _this2;
+        contact = _this2.contacts.add({ objectId: contactId });
+        _this2.showSpinner();
         contact.fetch().then(function () {
           router.$el.html((0, _viewsContact2['default'])(contact.toJSON()));
         });
@@ -211,7 +235,7 @@ var Router = _backbone2['default'].Router.extend({
 exports['default'] = Router;
 module.exports = exports['default'];
 
-},{"./contacts_collection":3,"./views/contact":6,"./views/contacts":7,"./views/home":8,"backbone":10,"jquery":11}],6:[function(require,module,exports){
+},{"./contacts_collection":3,"./views/contact":6,"./views/contacts":7,"./views/form":8,"./views/home":9,"backbone":11,"jquery":12}],6:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -234,7 +258,7 @@ function contactTemplate(data) {
 exports['default'] = contactTemplate;
 module.exports = exports['default'];
 
-},{"moment":12}],7:[function(require,module,exports){
+},{"moment":13}],7:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -260,14 +284,27 @@ module.exports = exports['default'];
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+function formTemp() {
+  return "\n    <form>\n      Name: <input type=\"text\" name=\"FullName\">\n      <br>\n      PhoneNum: <input type=\"text\" name=\"PhoneNum\">\n      <br>\n      Location: <input type=\"text\" name=\"Location\">\n      <br>\n      Email: <input type=\"text\" name=\"Email\">\n      <br>\n      <input id=\"btnCreateUser\" type=\"button\" value=\"Submit\" />\n    </form>\n  ";
+}
+
+exports["default"] = formTemp;
+module.exports = exports["default"];
+
+},{}],9:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 function homeTemplate() {
-  return "\n    <h2>Home page</h2>\n    <h2><a href=\"#contacts\">Contacts</h2>\n\n  ";
+  return "\n    <h2>Home page</h2>\n    <h2><a href=\"#contacts\">Contacts</h2>\n    <h2><a href=\"#users/new\">New Contact</h2>\n\n  ";
 }
 
 exports["default"] = homeTemplate;
 module.exports = exports["default"];
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 (function (global){
 //     Backbone.js 1.2.3
 
@@ -2166,7 +2203,7 @@ module.exports = exports["default"];
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"jquery":11,"underscore":13}],10:[function(require,module,exports){
+},{"jquery":12,"underscore":14}],11:[function(require,module,exports){
 (function (global){
 //     Backbone.js 1.2.3
 
@@ -4065,7 +4102,7 @@ module.exports = exports["default"];
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"jquery":11,"underscore":13}],11:[function(require,module,exports){
+},{"jquery":12,"underscore":14}],12:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.4
  * http://jquery.com/
@@ -13277,7 +13314,7 @@ return jQuery;
 
 }));
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 //! moment.js
 //! version : 2.10.6
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
@@ -16473,7 +16510,7 @@ return jQuery;
     return _moment;
 
 }));
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 //     Underscore.js 1.8.3
 //     http://underscorejs.org
 //     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors

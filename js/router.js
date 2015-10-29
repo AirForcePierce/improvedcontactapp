@@ -7,13 +7,16 @@ import homeTemplate from './views/home';
 import contactsTemplate from './views/contacts';
 import contactTemplate from './views/contact';
 
+import formTemp from './views/form';
+
 let Router = Backbone.Router.extend({
 
   routes: {
     ""      : "home",
     "contacts" : "showContacts",
     "contacts/:id" : "showSpecificContact",
-    "about" : "showAbout"
+    "about" : "showAbout",
+    "users/new"  :  "showForm",
   },
 
   initialize: function(appElement) {
@@ -36,6 +39,23 @@ let Router = Backbone.Router.extend({
     console.log('show home page');
     this.$el.html( homeTemplate() );
   },
+
+  showForm: function showForm() {
+  this.$el.html(formTemp());
+  $('#btnCreateUser').on('click', (event) => {
+    console.log('its finally working');
+    let newUser = {
+      Name: $('input[name="FullName"]').val(),
+      PhoneNum: $('input[name="PhoneNum"]').val(),
+      Email: $('input[name="Email"]').val(),
+      Location: $('input[name="Location"]').val()
+    };
+    this.contacts.create(newUser);
+    this.navigate('contacts');
+    this.showContacts();
+    return false;
+  });
+},
 
   showSpinner: function() {
     this.$el.html(
